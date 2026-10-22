@@ -1,0 +1,44 @@
+REALIDAD AUMENTADA - Productora Compacta de Pintura
+José Torres · Víctor Vargas - UNEXPO, Ingeniería Mecatrónica
+==============================================================
+
+QUÉ HACE
+  Se abre la cámara del teléfono, la máquina aparece en el piso a tamaño
+  real (2,13 m de alto) y se puede caminar alrededor de ella.
+  - Android: Chrome con "Servicios de Google Play para RA" (ARCore).
+  - iPhone/iPad: Safari (usa AR Quick Look, viene con iOS).
+  - En PC: se ve el 3D y un código QR para abrirla en el teléfono.
+  - Teléfonos sin RA: igual se puede girar y ampliar el modelo 3D.
+
+ARCHIVOS (deben ir juntos en la misma carpeta)
+  index.html    la página
+  maquina.glb   el modelo 3D (9,3 MB, sacado de tu visor de la feria)
+
+IMPORTANTE: tiene que estar publicada en internet con HTTPS.
+  Si abres index.html con doble clic en el teléfono, la cámara NO se
+  activa. Los teléfonos solo permiten RA desde una página https://.
+
+OPCIÓN A - Netlify (la más rápida, ~2 minutos)
+  1. Entra a https://app.netlify.com/drop y crea una cuenta gratis.
+  2. Arrastra la carpeta completa (con index.html y maquina.glb).
+  3. Te da un enlace tipo https://algo.netlify.app  -> ese es el tuyo.
+     Puedes cambiarle el nombre en "Site configuration > Change site name".
+
+OPCIÓN B - GitHub Pages
+  1. Crea un repositorio público y sube index.html y maquina.glb.
+  2. Settings > Pages > Branch: main / (root) > Save.
+  3. En 1-2 minutos queda en https://TU_USUARIO.github.io/NOMBRE_REPO/
+
+DESPUÉS
+  - Pon ese enlace en el QR del tríptico ("Escanea para ver...").
+  - Pruébalo antes de la feria en un Android y en un iPhone.
+  - Si el teléfono abre el QR dentro de Instagram/Facebook, hay que tocar
+    "Abrir en el navegador": esos visores internos no dan acceso a la cámara.
+  - Necesita datos o WiFi (carga el visor y 9 MB de modelo). En el stand
+    conviene tener WiFi o un punto de acceso.
+
+CÓMO SE USA EN EL STAND
+  Toca "Ver en mi espacio" -> apunta al piso -> mueve el teléfono despacio
+  hasta que aparezca la máquina. Se puede arrastrar para moverla, girarla
+  con dos dedos y caminar alrededor. Mejor en un piso con textura y buena
+  luz (los pisos blancos brillantes cuestan más).

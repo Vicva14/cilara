@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Productora Compacta de Pintura · RA</title>
+<meta name="description" content="Mira la máquina productora de pintura de base acuosa en tamaño real con la cámara de tu teléfono.">
+<meta name="theme-color" content="#0B1B3D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+/* Escenario a pantalla completa: el modelo es protagonista, controles anclados abajo como en una cámara */
+:root{
+  --navy:#0B1B3D; --navy-2:#13295A; --line:rgba(255,255,255,.14);
+  --orange:#F26A1B; --orange-press:#D9570C;
+  --ink:#F4F6FA; --ink-dim:#AEB8CC;
+  --display:'Barlow Condensed','Arial Narrow',sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--navy);color:var(--ink);font:15px/1.4 var(--body);overflow:hidden;-webkit-tap-highlight-color:transparent}
+model-viewer{
+  position:fixed;inset:0;width:100%;height:100%;
+  background:radial-gradient(120% 80% at 50% 38%, #1d3a78 0%, var(--navy-2) 38%, var(--navy) 78%);
+  --progress-bar-color:transparent; --progress-mask:transparent;
+}
+/* Cabecera */
+.top{
+  position:fixed;top:0;left:0;right:0;z-index:5;pointer-events:none;
+  padding:calc(env(safe-area-inset-top,0px) + 14px) max(16px,env(safe-area-inset-right,0px)) 28px max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(var(--navy) 0%, rgba(11,27,61,.85) 55%, rgba(11,27,61,0));
+}
+.eyebrow{font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+h1{margin:6px 0 0;font:700 clamp(26px,7.4vw,40px)/.95 var(--display);text-transform:uppercase;letter-spacing:.01em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--orange)}
+.dims{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:500 12px/1 var(--body);padding:6px 9px;border:1px solid var(--line);border-radius:999px;color:var(--ink-dim);font-variant-numeric:tabular-nums;background:rgba(11,27,61,.55)}
+.chip b{color:var(--ink);font-weight:600}
+
+/* Etiquetas sobre la máquina */
+.hs{
+  display:flex;align-items:center;gap:6px;border:0;padding:0;background:none;cursor:pointer;
+  transition:opacity .25s;
+}
+.hs .dot{width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;font:700 12px/22px var(--display);text-align:center;box-shadow:0 0 0 3px rgba(242,106,27,.28),0 2px 6px rgba(0,0,0,.4);flex:none}
+.hs .lbl{font:600 12px/1 var(--body);color:var(--navy);background:rgba(255,255,255,.94);padding:5px 8px;border-radius:6px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hs.back{opacity:0;pointer-events:none}
+.nolabels .hs{display:none}
+.hs:focus-visible .dot{outline:2px solid #fff;outline-offset:2px}
+
+/* Carga */
+.loading{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;width:min(260px,70vw);text-align:center}
+.loading p{margin:0 0 10px;font:600 13px/1.3 var(--body);color:var(--ink-dim);letter-spacing:.04em}
+.bar{height:4px;border-radius:2px;background:rgba(255,255,255,.12);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--orange);transition:width .2s}
+
+/* Panel inferior */
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:5;
+  padding:36px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(rgba(11,27,61,0), rgba(11,27,61,.9) 40%, var(--navy));
+  display:grid;gap:10px;justify-items:center;
+}
+.ar-btn{
+  width:min(420px,100%);display:flex;align-items:center;justify-content:center;gap:10px;
+  border:0;border-radius:14px;padding:16px 18px;background:var(--orange);color:#fff;cursor:pointer;
+  font:700 20px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;
+  box-shadow:0 8px 24px rgba(242,106,27,.35);
+}
+.ar-btn:active{background:var(--orange-press);transform:translateY(1px)}
+.ar-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.ar-btn svg{width:24px;height:24px;flex:none}
+.ar-btn[disabled]{opacity:.5}
+.row{width:min(420px,100%);display:flex;gap:8px;justify-content:space-between;align-items:center}
+.ghost{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);border-radius:10px;padding:9px 12px;font:600 13px/1 var(--body);cursor:pointer}
+.ghost[aria-pressed="false"]{color:var(--ink-dim)}
+.ghost:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+.hint{font-size:12.5px;color:var(--ink-dim);text-align:center;max-width:420px;margin:0}
+.hint strong{color:var(--ink)}
+
+/* Aviso: sin RA (PC o teléfono no compatible) */
+.noar{width:min(420px,100%);display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(19,41,90,.85)}
+.noar .qr{width:96px;height:96px;background:#fff;border-radius:8px;padding:6px}
+.noar .qr img,.noar .qr svg{width:100%;height:100%;display:block}
+.noar p{margin:0;font-size:13px;color:var(--ink-dim)}
+.noar p b{display:block;color:var(--ink);font:700 16px/1.15 var(--display);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px}
+.noar.noqr{grid-template-columns:1fr}
+
+/* Mensaje dentro de la RA (WebXR) */
+.ar-tip{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translateX(-50%);z-index:6;background:rgba(11,27,61,.88);color:var(--ink);padding:10px 14px;border-radius:10px;font:600 13px/1.3 var(--body);text-align:center;width:max-content;max-width:calc(100vw - 32px)}
+model-viewer:not([ar-status="session-started"]) .ar-tip{display:none}
+model-viewer[ar-status="session-started"] ~ .dock, model-viewer[ar-status="session-started"] ~ .top{display:none}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<model-viewer id="mv"
+  src="maquina.glb"
+  alt="Máquina productora compacta de pintura de base acuosa"
+  ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor" ar-scale="auto"
+  camera-controls touch-action="none"
+  camera-orbit="53deg 74deg 6.7m" min-camera-orbit="auto 10deg 1.2m" max-camera-orbit="auto 95deg 8m"
+  camera-target="0m 1.05m 0m" field-of-view="32deg"
+  auto-rotate auto-rotate-delay="4000" rotation-per-second="14deg" interaction-prompt="none"
+  shadow-intensity="1" shadow-softness=".8" environment-image="neutral" exposure="1.05"
+  loading="eager" reveal="auto">
+
+  <button slot="ar-button" hidden></button>
+
+  <button class="hs" slot="hotspot-1" data-position="-0.109m 2.08m -0.339m" data-n="0m 1m 0m" data-zoom="2.2m" data-info="Motor trifásico 3 HP que mueve el eje del mezclador."><span class="dot">1</span><span class="lbl">Motor 3 HP</span></button>
+  <button class="hs" slot="hotspot-2" data-position="0.33m 1.85m 0.01m" data-n="0.8m 0m 0.6m" data-zoom="2.4m" data-info="Tolvas de sólidos con compuertas y vibradores."><span class="dot">2</span><span class="lbl">Tolvas de sólidos</span></button>
+  <button class="hs" slot="hotspot-3" data-position="-0.328m 1.72m -0.058m" data-n="-0.68m 0m 0.73m" data-zoom="2m" data-info="Bombas peristálticas para dosificar resinas y aditivos."><span class="dot">3</span><span class="lbl">Bombas peristálticas</span></button>
+  <button class="hs" slot="hotspot-4" data-position="0.145m 1.35m -0.127m" data-n="0.8m 0m 0.6m" data-zoom="2.6m" data-info="Tanque de mezclado en acero inoxidable."><span class="dot">4</span><span class="lbl">Tanque de mezclado</span></button>
+  <button class="hs" slot="hotspot-5" data-position="0.5m 1.22m -0.307m" data-n="1m 0m 0m" data-zoom="1.6m" data-info="Pantalla táctil HMI de 7 pulgadas con ESP32."><span class="dot">5</span><span class="lbl">HMI 7″</span></button>
+  <button class="hs" slot="hotspot-6" data-position="-0.011m 0.816m -0.283m" data-n="0.78m 0m 0.62m" data-zoom="2m" data-info="Válvula motorizada de descarga hacia el envase."><span class="dot">6</span><span class="lbl">Válvula motorizada</span></button>
+  <button class="hs" slot="hotspot-7" data-position="0.207m 0.97m -0.594m" data-n="0.72m 0m -0.69m" data-zoom="2m" data-info="Tablero eléctrico: variador, relés, fuentes y protecciones."><span class="dot">7</span><span class="lbl">Tablero eléctrico</span></button>
+  <button class="hs" slot="hotspot-8" data-position="0.305m 0.31m -0.007m" data-n="0.8m 0m 0.6m" data-zoom="2.4m" data-info="Bandeja giratoria de envasado en galones."><span class="dot">8</span><span class="lbl">Bandeja de envasado</span></button>
+  <button class="hs" slot="hotspot-9" data-position="0.362m 0.40m 0.493m" data-n="0.4m 0m 0.92m" data-zoom="2.2m" data-info="Banda transportadora de salida, 700 mm entre centros."><span class="dot">9</span><span class="lbl">Banda transportadora</span></button>
+
+  <div class="ar-tip" id="arTip">Mueve el teléfono despacio apuntando al piso</div>
+</model-viewer>
+
+<header class="top">
+  <div class="eyebrow">UNEXPO · Ingeniería Mecatrónica</div>
+  <h1>Productora de pintura <em>de base acuosa</em></h1>
+  <div class="dims" aria-label="Medidas reales">
+    <span class="chip">Alto <b>2,13 m</b></span>
+    <span class="chip">Ancho <b>1,38 m</b></span>
+    <span class="chip">Fondo <b>1,80 m</b></span>
+  </div>
+</header>
+
+<div class="loading" id="loading" role="status">
+  <p id="loadTxt">Cargando la máquina… 0 %</p>
+  <div class="bar"><i id="barFill"></i></div>
+</div>
+
+<footer class="dock">
+  <button class="ar-btn" id="arBtn" type="button" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M12 7l4.5 2.5v5L12 17l-4.5-2.5v-5z"/><path d="M12 12l4.5-2.5M12 12v5M12 12L7.5 9.5"/></svg>
+    <span>Ver en mi espacio</span>
+  </button>
+
+  <div class="noar" id="noAr" hidden>
+    <div class="qr" id="qr" aria-label="Código QR de esta página"></div>
+    <p id="noArTxt"><b>Ábrela en tu teléfono</b>Escanea el código con la cámara para ver la máquina en tamaño real en el piso.</p>
+  </div>
+
+  <div class="row">
+    <button class="ghost" id="lblBtn" type="button" aria-pressed="true">Etiquetas: sí</button>
+    <button class="ghost" id="resetBtn" type="button">Vista inicial</button>
+  </div>
+  <p class="hint" id="hint">Toca el botón, apunta al <strong>piso</strong> y mueve el teléfono despacio. La máquina aparece a <strong>tamaño real</strong> y puedes caminar a su alrededor.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script type="module">
+const mv = document.getElementById('mv');
+const arBtn = document.getElementById('arBtn');
+const loading = document.getElementById('loading');
+const barFill = document.getElementById('barFill');
+const loadTxt = document.getElementById('loadTxt');
+const noAr = document.getElementById('noAr');
+const noArTxt = document.getElementById('noArTxt');
+const hint = document.getElementById('hint');
+const arTip = document.getElementById('arTip');
+
+const ua = navigator.userAgent;
+const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isAndroid = /Android/i.test(ua);
+const inApp = /Instagram|FBAN|FBAV|Line\/|TikTok|Snapchat/i.test(ua);
+
+mv.addEventListener('progress', e => {
+  const p = Math.round(e.detail.totalProgress * 100);
+  barFill.style.width = p + '%';
+  loadTxt.textContent = p < 100 ? `Cargando la máquina… ${p} %` : 'Preparando…';
+});
+
+mv.addEventListener('load', async () => {
+  loading.hidden = true;
+  await customElements.whenDefined('model-viewer');
+  if (mv.canActivateAR) {
+    arBtn.disabled = false;
+  } else {
+    arBtn.hidden = true;
+    hint.hidden = true;
+    noAr.hidden = false;
+    if (isIOS || isAndroid) {
+      noAr.classList.add('noqr');
+      document.getElementById('qr').hidden = true;
+      noArTxt.innerHTML = inApp
+        ? '<b>Ábrela en el navegador</b>Este visor interno no permite usar la cámara. Toca ⋯ y elige “Abrir en Safari” o “Abrir en Chrome”.'
+        : '<b>Tu teléfono no permite RA</b>Igual puedes explorar la máquina en 3D: gira con un dedo y acerca con dos.';
+    } else {
+      makeQR();
+    }
+  }
+});
+
+// Ocultar las etiquetas que quedan detrás de la máquina (cálculo propio, sin depender del visor)
+const hotspots = [...document.querySelectorAll('.hs')].map(h => ({ el: h, n: h.dataset.n.split(' ').map(parseFloat) }));
+function updateLabels() {
+  const inAR = mv.getAttribute('ar-status') === 'session-started';
+  let dir = null;
+  if (!inAR && mv.getCameraOrbit) {
+    const o = mv.getCameraOrbit();
+    dir = [Math.sin(o.phi) * Math.sin(o.theta), Math.cos(o.phi), Math.sin(o.phi) * Math.cos(o.theta)];
+  }
+  for (const { el, n } of hotspots) {
+    const facing = !dir || (n[0] * dir[0] + n[1] * dir[1] + n[2] * dir[2]) > -0.05;
+    el.classList.toggle('back', !facing);
+  }
+}
+mv.addEventListener('camera-change', updateLabels);
+mv.addEventListener('load', updateLabels);
+mv.addEventListener('ar-status', updateLabels);
+
+mv.addEventListener('error', () => {
+  loadTxt.textContent = 'No se pudo cargar el modelo. Revisa tu conexión y recarga la página.';
+});
+
+arBtn.addEventListener('click', () => mv.activateAR());
+
+mv.addEventListener('ar-status', e => {
+  if (e.detail.status === 'failed') {
+    hint.innerHTML = '<strong>No se pudo abrir la cámara.</strong> En Android hace falta tener instalado “Servicios de Google Play para RA”. Prueba también desde Chrome o Safari.';
+  }
+});
+mv.addEventListener('ar-tracking', e => {
+  arTip.textContent = e.detail.status === 'not-tracking'
+    ? 'Mueve el teléfono despacio apuntando al piso'
+    : 'Arrastra para mover · gira con dos dedos';
+});
+
+// Etiquetas
+const lblBtn = document.getElementById('lblBtn');
+let showLabels = true;
+try { showLabels = localStorage.getItem('etiquetas') !== 'no'; } catch (_) {}
+const applyLabels = () => {
+  mv.classList.toggle('nolabels', !showLabels);
+  lblBtn.setAttribute('aria-pressed', String(showLabels));
+  lblBtn.textContent = 'Etiquetas: ' + (showLabels ? 'sí' : 'no');
+};
+applyLabels();
+lblBtn.addEventListener('click', () => {
+  showLabels = !showLabels; applyLabels();
+  try { localStorage.setItem('etiquetas', showLabels ? 'si' : 'no'); } catch (_) {}
+});
+
+// Tocar una etiqueta acerca la cámara a esa pieza
+document.querySelectorAll('.hs').forEach(h => {
+  h.addEventListener('click', () => {
+    mv.autoRotate = false;
+    const [x, y, z] = h.dataset.position.split(' ');
+    const [nx, , nz] = h.dataset.n.split(' ').map(parseFloat);
+    const theta = Math.atan2(nx, nz) * 180 / Math.PI;
+    mv.cameraTarget = `${x} ${y} ${z}`;
+    mv.cameraOrbit = `${(nx || nz) ? theta.toFixed(0) : 53}deg 72deg ${h.dataset.zoom}`;
+    hint.innerHTML = `<strong>${h.querySelector('.lbl').textContent}.</strong> ${h.dataset.info}`;
+  });
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  mv.cameraTarget = '0m 1.05m 0m';
+  mv.cameraOrbit = '53deg 74deg 6.7m';
+  mv.autoRotate = true;
+  hint.innerHTML = 'Toca el botón, apunta al <strong>piso</strong> y mueve el teléfono despacio. La máquina aparece a <strong>tamaño real</strong> y puedes caminar a su alrededor.';
+});
+
+function makeQR() {
+  try {
+    const q = qrcode(0, 'M'); q.addData(location.href.split('#')[0]); q.make();
+    document.getElementById('qr').innerHTML = q.createSvgTag({ margin: 0, scalable: true });
+  } catch (_) {
+    noAr.classList.add('noqr'); document.getElementById('qr').hidden = true;
+  }
+}
+</script>
+</body>
+</html>
